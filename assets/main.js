@@ -40,11 +40,11 @@ var svg = d3.select("body")
 .attr("width", width)
 .attr("height", height);
 
-// // Append Div for tooltip to SVG
-// var div = d3.select("body")
-// 		    .append("div")
-//     		.attr("class", "tooltip")
-//     		.style("opacity", 0);
+// Append Div for tooltip to SVG
+var div = d3.select("body")
+.append("div")
+.attr("class", "tooltip")
+.style("opacity", 0);
 
 
 
@@ -54,8 +54,8 @@ d3.csv("USPopByState.csv", function(data) {
 	// color.domain([0,1,2,3]); // setting the range of the input data
 
 
-//preparing data to be mapped to 6 colors
-//get array of the relevant data field
+	//preparing data to be mapped to 6 colors
+	//get array of the relevant data field
 	var dataValues = data.map(function(val){
 		return val.visited;
 	});
@@ -115,10 +115,8 @@ d3.csv("USPopByState.csv", function(data) {
 		.style("stroke", "#fff")
 		.style("stroke-width", "1")
 		.style("fill", function(d) {
-
 			// Get data value
 			var value = d.properties.visited;
-
 			if (value) {
 				//If value exists…
 				return color(value);
@@ -126,7 +124,27 @@ d3.csv("USPopByState.csv", function(data) {
 				//If value is undefined…
 				return "rgb(0,0,100)";
 			}
-		}); // ends fill function
+		}) // ends fill function
+
+		// 	// Modification of custom tooltip code provided by Malcolm Maclean, "D3 Tips and Tricks"
+		// 	// http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
+		.on("mouseover", function(d) {
+			div.transition()
+			.duration(200)
+			.style("opacity", .9);
+
+				console.log(d)
+			div.text(d.properties.NAME + ": " + d.properties.visited)
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY - 28) + "px");
+		})
+		// fade out tooltip on mouse out
+		.on("mouseout", function(d) {
+			div.transition()
+			.duration(500)
+			.style("opacity", 0);
+		});
+
 
 
 		// // Map the cities I have lived in!
@@ -188,26 +206,31 @@ d3.csv("USPopByState.csv", function(data) {
 		.style("fill", color);
 
 
-	// // Get data values for the ranges to be displayed in the legned
-	var legendValues = colorDomainArray.concat([dataMax]);
-
-	// var formattedLegendValues = legendValues.map(function(x){
-	// 	return d3.format(",.2f")(x);
-	// });
-	var formattedLegendValues = legendValues.map(function(x){
-		return d3.format(".2e")(x);
-	});
+		// // Get data values for the ranges to be displayed in the legned
+		var legendValues = colorDomainArray.concat([dataMax]);
 
 
 
-console.log(formattedLegendValues);
+		// Could add in conditional formatting based on size of max values.
+		// Values formatted with commas and given with no decimal places.
+		var formattedLegendValues = legendValues.map(function(x){
+			return d3.format(",.0f")(x);
+		});
+		// Values formatted in scientific notation
+		// var formattedLegendValues = legendValues.map(function(x){
+		// 	return d3.format(".1e")(x);
+		// });
 
-	// Reverse array, since legened is constrcuted from top/max to bottom/min
-	 var legendText = formattedLegendValues.reverse();
-	// var legendText = legendValues.reverse();
 
-	//loop over indices to have access to pairs of consecutive data values to be displayed in the legned
-   var legendIndex = [0,1,2,3,4,5]
+
+		console.log(formattedLegendValues);
+
+		// Reverse array, since legened is constrcuted from top/max to bottom/min
+		var legendText = formattedLegendValues.reverse();
+		// var legendText = legendValues.reverse();
+
+		//loop over indices to have access to pairs of consecutive data values to be displayed in the legned
+		var legendIndex = [0,1,2,3,4,5]
 		legend.append("text")
 		.data(legendIndex)
 		.attr("x", 24)
@@ -215,5 +238,5 @@ console.log(formattedLegendValues);
 		.attr("dy", ".35em")
 		.text(function(d) {
 			return legendText[d+1] + ' to ' + legendText[d]; });
+		});
 	});
-});

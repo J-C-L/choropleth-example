@@ -183,19 +183,31 @@ d3.csv("USPopByState.csv", function(data) {
 		.attr("transform", function(d, i) { return "translate(0," + i * 22 + ")"; });
 
 		legend.append("rect")
-		.attr("width", 15)
+		.attr("width", 18)
 		.attr("height", 22)
 		.style("fill", color);
 
 
+	// // Get data values for the ranges to be displayed in the legned
+	var legendValues = colorDomainArray.concat([dataMax]);
 
-		var legendValues = colorDomainArray.concat([dataMax]);
-	 // var legendText = legendValues.reverse();
-	 var legendText = legendValues.reverse();
-	 console.log(legendText);
+	// var formattedLegendValues = legendValues.map(function(x){
+	// 	return d3.format(",.2f")(x);
+	// });
+	var formattedLegendValues = legendValues.map(function(x){
+		return d3.format(".2e")(x);
+	});
 
+
+
+console.log(formattedLegendValues);
+
+	// Reverse array, since legened is constrcuted from top/max to bottom/min
+	 var legendText = formattedLegendValues.reverse();
+	// var legendText = legendValues.reverse();
+
+	//loop over indices to have access to pairs of consecutive data values to be displayed in the legned
    var legendIndex = [0,1,2,3,4,5]
-
 		legend.append("text")
 		.data(legendIndex)
 		.attr("x", 24)

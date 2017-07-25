@@ -134,7 +134,8 @@ d3.csv("USPopByState.csv", function(data) {
 			.style("opacity", .9);
 
 				console.log(d)
-			div.text(d.properties.NAME + ": " + d.properties.visited)
+			div.text(d.properties.NAME + ": " +
+			d3.format(",.0f")(d.properties.visited))
 			.style("left", (d3.event.pageX) + "px")
 			.style("top", (d3.event.pageY - 28) + "px");
 		})

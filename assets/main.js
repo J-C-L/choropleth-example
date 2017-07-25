@@ -59,13 +59,13 @@ d3.csv("USPopByState.csv", function(data) {
 	var dataValues = data.map(function(val){
 		return val.visited;
 	});
-	console.log(dataValues);
-	// var dataMax = dataValues.reduce
+
+
 
 	var dataMax = Math.max.apply(null, dataValues);
 	var dataMin = Math.min.apply(null, dataValues);
 	var dataRange = dataMax - dataMin;
-	console.log(dataRange);
+
 
 	var colorDomainArray = [];
 	for (var i = 0; i< 6; i++){
@@ -73,7 +73,7 @@ d3.csv("USPopByState.csv", function(data) {
 		colorDomainArray.push(value);
 	}
 
-	console.log(colorDomainArray);
+
 
 	color.domain(colorDomainArray); // setting the range of the input data
 	// color.domain([0,1,2,3]); // setting the range of the input data
@@ -168,31 +168,40 @@ d3.csv("USPopByState.csv", function(data) {
 		// });
 
 		// Modified Legend Code from Mike Bostock: http://bl.ocks.org/mbostock/3888852
-		// var legendValues = colorDomainArray.push(dataMax);
-		// var legendText = legendValues.reverse();
-		var legendText = colorDomainArray.reverse();
+
+
 
 		var legend = d3.select("body").append("svg")
 		.attr("class", "legend")
-		.attr("width", 140)
+		.attr("width", 240)
+		// .attr("width", 140)
 		.attr("height", 200)
 		.selectAll("g")
 		.data(color.domain().slice().reverse())
 		.enter()
 		.append("g")
-		.attr("transform", function(d, i) { return "translate(0," + i * 18 + ")"; });
+		.attr("transform", function(d, i) { return "translate(0," + i * 22 + ")"; });
 
 		legend.append("rect")
-		.attr("width", 18)
-		.attr("height", 18)
+		.attr("width", 15)
+		.attr("height", 22)
 		.style("fill", color);
 
-		legend.append("text")
-		.data(legendText)
-		.attr("x", 24)
-		.attr("y", 9)
-		.attr("dy", ".35em")
-		.text(function(d) { return d; });
-	});
 
+
+		var legendValues = colorDomainArray.concat([dataMax]);
+	 // var legendText = legendValues.reverse();
+	 var legendText = legendValues.reverse();
+	 console.log(legendText);
+
+   var legendIndex = [0,1,2,3,4,5]
+
+		legend.append("text")
+		.data(legendIndex)
+		.attr("x", 24)
+		.attr("y", 12)
+		.attr("dy", ".35em")
+		.text(function(d) {
+			return legendText[d+1] + ' to ' + legendText[d]; });
+	});
 });
